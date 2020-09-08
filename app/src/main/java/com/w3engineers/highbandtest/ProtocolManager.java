@@ -1,7 +1,5 @@
 package com.w3engineers.highbandtest;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.IntentFilter;
 
@@ -18,6 +16,11 @@ import java.util.List;
 import java.util.UUID;
 
 public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver.BTDiscoveryListener {
+
+    public static final String SERVICE_TYPE = "xyz.m";
+    public static String mMyBTName = "abc";
+    public static String mMySSIDName;
+
     private BluetoothServer bluetoothServer;
     private BluetoothClient bluetoothClient;
     private static ProtocolManager protocolManager;
