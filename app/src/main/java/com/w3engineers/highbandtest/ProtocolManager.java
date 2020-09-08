@@ -15,7 +15,10 @@ import com.w3engineers.highbandtest.protocol.model.Credential;
 import com.w3engineers.highbandtest.protocol.wifi.libmeshx.wifid.WiFiDirectManagerLegacy;
 import com.w3engineers.highbandtest.util.MeshLog;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.UUID;
 
 public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver.BTDiscoveryListener {
@@ -35,9 +38,14 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     public static final String BLUETOOTH_PREFIX = "prefix";
     public static String bluetoothName;
     private WiFiDirectManagerLegacy mWiFiDirectManagerLegacy;
+    private List<String> connectedDeviceBtName;
+    private volatile Queue<BluetoothDevice> mBluetoothDevices;
+
 
     private ProtocolManager(Context context) {
         this.mContext = context;
+        connectedDeviceBtName = new ArrayList<>();
+        mBluetoothDevices = new LinkedList<>();
         this.bluetoothServer = new BluetoothServer("Node id", this);
         this.bluetoothClient = new BluetoothClient("Node id", this, bluetoothServer);
         this.bluetoothServer.starListenThread();
@@ -118,11 +126,23 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
 
     @Override
     public void onBluetoothFound(List<BluetoothDevice> bluetoothDevices) {
+        for (BluetoothDevice item : bluetoothDevices){
+            if(!connectedDeviceBtName.contains(item.getName())){
+                mBluetoothDevices.add(item);
+            }
+        }
 
+        if(!mBluetoothDevices.isEmpty()){
+            makeBtConnection();
+        }
     }
 
     @Override
     public void onScanFinished() {
+    }
+
+
+    private void makeBtConnection(){
 
     }
 }

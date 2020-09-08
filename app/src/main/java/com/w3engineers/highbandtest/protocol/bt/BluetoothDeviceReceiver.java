@@ -11,6 +11,7 @@ import com.w3engineers.highbandtest.util.HandlerUtil;
 import com.w3engineers.highbandtest.util.MeshLog;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +27,7 @@ public class BluetoothDeviceReceiver extends BroadcastReceiver {
     private final long DISCOVERY_NODE_CACHING_TIME = 3000;
     public BluetoothDeviceReceiver(BTDiscoveryListener listener) {
         this.btDiscoveryListener = listener;
+        mBluetoothDeviceMap = new HashMap<>();
     }
 
     private Runnable postDeviceList = () -> {
