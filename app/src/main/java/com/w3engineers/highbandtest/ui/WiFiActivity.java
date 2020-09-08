@@ -57,7 +57,7 @@ public class WiFiActivity extends AppCompatActivity {
     }
 
     public void sendMessage(View view) {
-        HelloMessage helloMessage = new HelloMessage();
+        HelloMessage helloMessage = new HelloMessage(null);
         helloMessage.hello = "Hello from:"+ WiFiUtil.getLocalIpAddress();
 
         try {
