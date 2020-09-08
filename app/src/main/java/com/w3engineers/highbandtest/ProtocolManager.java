@@ -1,5 +1,7 @@
 package com.w3engineers.highbandtest;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.IntentFilter;
 
@@ -107,6 +109,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     public void onCredentialReceived(Credential credential) {
 
     }
+
 
     @Override
     public void onBluetoothFound(List<BluetoothDevice> bluetoothDevices) {
