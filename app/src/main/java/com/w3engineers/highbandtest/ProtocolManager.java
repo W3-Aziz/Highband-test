@@ -33,6 +33,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     private Context mContext;
     private BleLink mBleLink;
     public static final String BLUETOOTH_PREFIX = "prefix";
+    public static String bluetoothName;
     private WiFiDirectManagerLegacy mWiFiDirectManagerLegacy;
 
     private ProtocolManager(Context context) {
@@ -46,7 +47,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     }
 
     public static ProtocolManager on(Context context) {
-        if (protocolManager != null) {
+        if (protocolManager == null) {
             protocolManager = new ProtocolManager(context);
         }
         return protocolManager;
@@ -55,8 +56,8 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
 
     public void startProtocol() {
         MeshLog.v("**** Highband mesh started *****");
-        String btName = BLUETOOTH_PREFIX + "-" + getRandomString();
-        bluetoothAdapter.setName(btName);
+        bluetoothName = BLUETOOTH_PREFIX + "-" + getRandomString();
+        bluetoothAdapter.setName(bluetoothName);
         registerBTDiscoveryReceiver();
         startBtSearch();
     }

@@ -40,8 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void startProtocolManager(){
-        protocolManager = ProtocolManager.on(getApplicationContext());
-        protocolManager.startProtocol();
+        ProtocolManager.on(getApplicationContext()).startProtocol();
     }
 
 

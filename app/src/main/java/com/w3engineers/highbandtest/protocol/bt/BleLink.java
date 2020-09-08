@@ -8,6 +8,7 @@ import com.w3engineers.highbandtest.protocol.model.BaseMessage;
 import com.w3engineers.highbandtest.protocol.model.BtHello;
 import com.w3engineers.highbandtest.protocol.model.Credential;
 import com.w3engineers.highbandtest.util.Constant;
+import com.w3engineers.highbandtest.util.HandlerUtil;
 import com.w3engineers.highbandtest.util.MeshLog;
 
 import org.json.JSONObject;
@@ -26,7 +27,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-public class BleLink extends Thread{
+public class BleLink extends Thread {
     public enum State {
         CONNECTING,
         CONNECTED,
@@ -85,7 +86,7 @@ public class BleLink extends Thread{
         return mBleLink;
     }
 
-    public LinkMode getLinkMode(){
+    public LinkMode getLinkMode() {
         return linkMode;
     }
 
@@ -124,7 +125,7 @@ public class BleLink extends Thread{
         try {
             int len;
             while (true) {
-               inputData.ensureWritable(bufferSize, true);
+                inputData.ensureWritable(bufferSize, true);
 
                 len = in.read(
                         inputData.array(),
@@ -167,8 +168,6 @@ public class BleLink extends Thread{
     }
 
 
-
-
     private boolean formFrames(ByteBuf inputData) {
         final int headerSize = 4;
 
@@ -195,7 +194,7 @@ public class BleLink extends Thread{
 
             try {
                 String msg = new String(frameBody);
-                new Thread(()->processMessage(msg)).start();
+                new Thread(() -> processMessage(msg)).start();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 continue;
@@ -206,12 +205,12 @@ public class BleLink extends Thread{
         return true;
     }
 
-    private void processMessage(String msg){
+    private void processMessage(String msg) {
         BaseMessage message = new Gson().fromJson(msg, BaseMessage.class);
 
-        if(message instanceof BtHello){
+        if (message instanceof BtHello) {
 
-        }else if(message instanceof Credential){
+        } else if (message instanceof Credential) {
 
         }
     }
@@ -232,7 +231,7 @@ public class BleLink extends Thread{
         pool.shutdown();
         outputExecutor.shutdown();
 
-        //HandlerUtil.postBackground(() -> connectionListener.onDisconnectLink(BleLink.this));
+        HandlerUtil.postBackground(() -> connectionListener.onBluetoothDisconnected());
 
         mBleLink = null;
 

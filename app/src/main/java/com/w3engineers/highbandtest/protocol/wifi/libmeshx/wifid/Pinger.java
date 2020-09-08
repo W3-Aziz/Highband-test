@@ -2,7 +2,6 @@ package com.w3engineers.highbandtest.protocol.wifi.libmeshx.wifid;
 
 import android.util.Patterns;
 
-import com.w3engineers.highbandtest.protocol.wifi.httpservices.MeshHttpServer;
 import com.w3engineers.highbandtest.protocol.wifi.libmeshx.wifi.WiFiClient;
 
 import org.json.JSONException;
@@ -59,14 +58,14 @@ public class Pinger implements Runnable {
 
             do {
 
-                try {
+                /*try {
 
                     isSuccess = MeshHttpServer.on().sendMessage(mIp, PING_MSG, mPingTimeOut)
                             == 1;
 
                 } catch (ExecutionException | InterruptedException e) {
                     e.printStackTrace();
-                }
+                }*/
 
             } while (++attemptCount < mMaxNumberOfRetry && !isSuccess);
 
