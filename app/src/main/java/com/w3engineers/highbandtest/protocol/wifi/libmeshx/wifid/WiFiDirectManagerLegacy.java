@@ -34,7 +34,7 @@ public class WiFiDirectManagerLegacy {
     public static final short MAX_SSID_CONNECTION_ATTEMPT = 3;
 
     private WiFiStateMonitor mWiFiStateMonitor;
-    private transient WiFiMeshConfig mWiFiMeshConfig;
+    public transient WiFiMeshConfig mWiFiMeshConfig;
     private Context mContext;
     private WiFiConnectionHelper mWiFiConnectionHelper;
     private volatile static WiFiDirectManagerLegacy sWiFiDirectManagerLegacy;

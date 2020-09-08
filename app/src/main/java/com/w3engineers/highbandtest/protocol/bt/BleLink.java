@@ -1,16 +1,13 @@
 package com.w3engineers.highbandtest.protocol.bt;
 
 import android.bluetooth.BluetoothSocket;
-import android.util.Config;
 
 import com.google.gson.Gson;
 import com.w3engineers.highbandtest.protocol.model.BaseMessage;
-import com.w3engineers.highbandtest.protocol.model.BtHello;
+import com.w3engineers.highbandtest.protocol.model.HelloMessage;
 import com.w3engineers.highbandtest.protocol.model.Credential;
 import com.w3engineers.highbandtest.util.Constant;
 import com.w3engineers.highbandtest.util.MeshLog;
-
-import org.json.JSONObject;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -209,7 +206,7 @@ public class BleLink extends Thread{
     private void processMessage(String msg){
         BaseMessage message = new Gson().fromJson(msg, BaseMessage.class);
 
-        if(message instanceof BtHello){
+        if(message instanceof HelloMessage){
 
         }else if(message instanceof Credential){
 

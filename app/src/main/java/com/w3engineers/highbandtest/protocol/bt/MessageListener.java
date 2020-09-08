@@ -6,4 +6,6 @@ public interface MessageListener {
     void onBluetoothConnected(BleLink link);
     void onBluetoothDisconnected();
     void onCredentialReceived(Credential credential);
+
+    void onMessage(String message);
 }

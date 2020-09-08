@@ -11,6 +11,7 @@ import com.w3engineers.highbandtest.protocol.bt.BluetoothDeviceReceiver;
 import com.w3engineers.highbandtest.protocol.bt.BluetoothServer;
 import com.w3engineers.highbandtest.protocol.bt.LinkMode;
 import com.w3engineers.highbandtest.protocol.bt.MessageListener;
+import com.w3engineers.highbandtest.protocol.data.AppMessageListener;
 import com.w3engineers.highbandtest.protocol.model.Credential;
 import com.w3engineers.highbandtest.protocol.wifi.libmeshx.wifid.WiFiDirectManagerLegacy;
 import com.w3engineers.highbandtest.util.MeshLog;
@@ -34,6 +35,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     private BleLink mBleLink;
     public static final String BLUETOOTH_PREFIX = "prefix";
     private WiFiDirectManagerLegacy mWiFiDirectManagerLegacy;
+    public AppMessageListener mAppMessageListener;
 
     private ProtocolManager(Context context) {
         this.mContext = context;
@@ -46,7 +48,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     }
 
     public static ProtocolManager on(Context context) {
-        if (protocolManager != null) {
+        if (protocolManager == null) {
             protocolManager = new ProtocolManager(context);
         }
         return protocolManager;
@@ -112,6 +114,13 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     @Override
     public void onCredentialReceived(Credential credential) {
 
+    }
+
+    @Override
+    public void onMessage(String message) {
+        if(mAppMessageListener != null) {
+            mAppMessageListener.onMessage(message);
+        }
     }
 
 

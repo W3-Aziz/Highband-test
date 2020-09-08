@@ -172,6 +172,29 @@ public class WiFiUtil {
         }
         return null;
     }
+    public static String getLocalIpAddress() {
+        try {
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
+                NetworkInterface intf = en.nextElement();
+                if (intf != null && intf.getName() != null && (intf.getName().startsWith("wlan0"))) {
+                    //Few devices maintain swlan and few wlan
+
+                    for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+                        InetAddress inetAddress = enumIpAddr.nextElement();
+                        if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
+                            String ip = inetAddress.getHostAddress();
+                             if(AddressUtil.isValidIPAddress(ip)) {
+                                 return ip;
+                             }
+                        }
+                    }
+                }
+            }
+        } catch (SocketException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
 
     public static boolean isHotSpotEnabled() {
         return getLocalAPIpAddress() != null;

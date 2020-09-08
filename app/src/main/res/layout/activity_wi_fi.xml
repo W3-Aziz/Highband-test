@@ -7,6 +7,7 @@
     tools:context=".ui.WiFiActivity">
 
     <Button
+        android:id="@+id/button_go"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Start GO"
@@ -17,13 +18,22 @@
         android:onClick="onGO"/>
 
     <Button
+        android:id="@+id/button_lc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Start LC"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/button_go"
+        app:layout_constraintRight_toRightOf="@id/button_go"
+        app:layout_constraintTop_toBottomOf="@id/button_go"
         android:onClick="onLC"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send Message"
+        app:layout_constraintLeft_toLeftOf="@id/button_lc"
+        app:layout_constraintRight_toRightOf="@id/button_lc"
+        app:layout_constraintTop_toBottomOf="@id/button_lc"
+        android:onClick="sendMessage"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
