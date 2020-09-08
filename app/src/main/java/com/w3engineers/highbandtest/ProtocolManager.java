@@ -5,6 +5,7 @@ import android.content.Context;
 import com.w3engineers.highbandtest.protocol.bt.BleLink;
 import com.w3engineers.highbandtest.protocol.bt.BluetoothClient;
 import com.w3engineers.highbandtest.protocol.bt.BluetoothServer;
+import com.w3engineers.highbandtest.protocol.bt.LinkMode;
 import com.w3engineers.highbandtest.protocol.bt.MessageListener;
 import com.w3engineers.highbandtest.util.MeshLog;
 
@@ -13,11 +14,13 @@ class ProtocolManager implements MessageListener {
     private BluetoothClient bluetoothClient;
     private static ProtocolManager protocolManager;
     private Context mContext;
+    private BleLink mBleLink;
 
     private ProtocolManager(Context context){
         this.mContext = context;
-        this.bluetoothServer = new BluetoothServer("Node id", this::onBluetoothConnected);
-        this.bluetoothClient = new BluetoothClient("", this::onBluetoothConnected, bluetoothServer);
+        this.bluetoothServer = new BluetoothServer("Node id", this);
+        this.bluetoothClient = new BluetoothClient("Node id", this, bluetoothServer);
+        this.bluetoothServer.starListenThread();
     }
 
     public ProtocolManager on(Context context){
@@ -29,6 +32,12 @@ class ProtocolManager implements MessageListener {
 
     @Override
     public void onBluetoothConnected(BleLink link) {
+        mBleLink = link;
 
+        if(link.getLinkMode() == LinkMode.SERVER){
+
+        }else {
+
+        }
     }
 }
