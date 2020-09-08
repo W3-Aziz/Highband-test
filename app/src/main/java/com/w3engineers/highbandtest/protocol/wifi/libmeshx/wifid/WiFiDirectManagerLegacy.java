@@ -9,7 +9,6 @@ import android.util.Log;
 import com.w3engineers.highbandtest.protocol.util.AndroidUtil;
 import com.w3engineers.highbandtest.protocol.util.P2PUtil;
 import com.w3engineers.highbandtest.protocol.util.WiFiUtil;
-import com.w3engineers.highbandtest.protocol.wifi.httpservices.MeshHttpServer;
 import com.w3engineers.highbandtest.protocol.wifi.libmeshx.wifi.WiFiClient;
 import com.w3engineers.highbandtest.protocol.wifi.libmeshx.wifi.WiFiConnectionHelper;
 import com.w3engineers.mesh.libmeshx.discovery.MeshXAPListener;
@@ -555,14 +554,14 @@ public class WiFiDirectManagerLegacy {
             mIsConnectivityPause = true;
             if (mSoftAccessPoint != null && mSoftAccessPoint.isGoAlive()) {
                 //First pause from socket
-                MeshHttpServer.on().pauseDirectDiscovery();
+                //MeshHttpServer.on().pauseDirectDiscovery();
                 isPaused = true;
             }
 
             if (mSoftAccessPointSearcher != null && mSoftAccessPointSearcher.mIsAlive) {
                 mSoftAccessPointSearcher.pauseConnectivity();
                 mConnectingSSID = null;
-                MeshHttpServer.on().pauseDirectDiscovery();
+                //MeshHttpServer.on().pauseDirectDiscovery();
 
                 isPaused = true;
             }
@@ -577,13 +576,13 @@ public class WiFiDirectManagerLegacy {
         if (mIsConnectivityPause) {
             if (mSoftAccessPoint != null && mSoftAccessPoint.isGoAlive()) {
                 //Resume socket
-                MeshHttpServer.on().resumeDirectDiscovery();
+                //MeshHttpServer.on().resumeDirectDiscovery();
                 isResumed = true;
             }
 
             if (mSoftAccessPointSearcher != null && mSoftAccessPointSearcher.mIsAlive) {
                 mSoftAccessPointSearcher.resumeConnectivity();
-                MeshHttpServer.on().resumeDirectDiscovery();
+                //MeshHttpServer.on().resumeDirectDiscovery();
                 isResumed = true;
             }
         }

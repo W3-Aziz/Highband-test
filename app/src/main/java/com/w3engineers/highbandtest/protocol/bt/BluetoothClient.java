@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.w3engineers.highbandtest.protocol.model.HelloMessage;
+import com.w3engineers.highbandtest.ProtocolManager;
 import com.w3engineers.highbandtest.util.Constant;
 
 import java.io.IOException;
@@ -48,7 +49,7 @@ public class BluetoothClient {
 
                     BleLink link = BleLink.on(bluetoothSocket, messageListener, LinkMode.CLIENT);
                     link.start();
-                    String hello = new Gson().toJson(new HelloMessage());
+                    String hello = new Gson().toJson(new HelloMessage(ProtocolManager.bluetoothName));
                     link.writeFrame(hello.getBytes());
                     listener.onConnectionState(bluetoothDevice.getName(), true);
                     messageListener.onBluetoothConnected(link);

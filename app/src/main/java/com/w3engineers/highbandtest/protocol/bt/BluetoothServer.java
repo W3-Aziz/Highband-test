@@ -80,7 +80,7 @@ public class BluetoothServer {
 
                 BleLink link = BleLink.on(bluetoothSocket, messageListener, LinkMode.SERVER);
                 link.start();
-                String hello = new Gson().toJson(new HelloMessage());
+                String hello = new Gson().toJson(new HelloMessage(ProtocolManager.bluetoothName));
                 link.writeFrame(hello.getBytes());
 
                 messageListener.onBluetoothConnected(link);
