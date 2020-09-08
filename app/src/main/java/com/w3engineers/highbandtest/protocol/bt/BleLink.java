@@ -3,6 +3,10 @@ package com.w3engineers.highbandtest.protocol.bt;
 import android.bluetooth.BluetoothSocket;
 import android.util.Config;
 
+import com.google.gson.Gson;
+import com.w3engineers.highbandtest.protocol.model.BaseMessage;
+import com.w3engineers.highbandtest.protocol.model.BtHello;
+import com.w3engineers.highbandtest.protocol.model.Credential;
 import com.w3engineers.highbandtest.util.Constant;
 import com.w3engineers.highbandtest.util.MeshLog;
 
@@ -81,7 +85,11 @@ public class BleLink extends Thread{
         return mBleLink;
     }
 
-    private void writeFrame(byte[] frame) {
+    public LinkMode getLinkMode(){
+        return linkMode;
+    }
+
+    public void writeFrame(byte[] frame) {
         // Output thread.
         byte[] buffer = frame;
 
@@ -186,7 +194,8 @@ public class BleLink extends Thread{
             inputData.readBytes(frameBody, 0, frameSize);
 
             try {
-                JSONObject jo = new JSONObject(new String(frameBody));
+                String msg = new String(frameBody);
+                new Thread(()->processMessage(msg)).start();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 continue;
@@ -195,6 +204,16 @@ public class BleLink extends Thread{
         }
 
         return true;
+    }
+
+    private void processMessage(String msg){
+        BaseMessage message = new Gson().fromJson(msg, BaseMessage.class);
+
+        if(message instanceof BtHello){
+
+        }else if(message instanceof Credential){
+
+        }
     }
 
 

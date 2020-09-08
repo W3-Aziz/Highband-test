@@ -4,6 +4,8 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 
+import com.google.gson.Gson;
+import com.w3engineers.highbandtest.protocol.model.BtHello;
 import com.w3engineers.highbandtest.util.Constant;
 import com.w3engineers.highbandtest.util.MeshLog;
 
@@ -14,7 +16,7 @@ public class BluetoothServer {
     private BluetoothAdapter bluetoothAdapter;
     private String nodeId;
     private ConnectionListenThread connectionListenThread;
-    private MessageListener bleListener;
+    private MessageListener messageListener;
     private String publicKey;
 
     private final Object mLock = new Object();
@@ -23,7 +25,7 @@ public class BluetoothServer {
     public BluetoothServer(String nodeId, MessageListener bleListener) {
         this.nodeId = nodeId;
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        this.bleListener = bleListener;
+        this.messageListener = bleListener;
     }
 
     public void starListenThread() {
@@ -76,9 +78,12 @@ public class BluetoothServer {
 
                 if (BleLink.getBleLink() != null) return;
 
-                BleLink link = BleLink.on(bluetoothSocket, bleListener, LinkMode.SERVER);
+                BleLink link = BleLink.on(bluetoothSocket, messageListener, LinkMode.SERVER);
                 link.start();
-                //ToDo send hello packet
+                String hello = new Gson().toJson(new BtHello());
+                link.writeFrame(hello.getBytes());
+
+                messageListener.onBluetoothConnected(link);
 
                 MeshLog.v("Ble server accept connection");
             } catch (IOException e) {

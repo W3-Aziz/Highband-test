@@ -6,8 +6,9 @@ import android.bluetooth.BluetoothSocket;
 import android.os.Build;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.w3engineers.highbandtest.protocol.model.BtHello;
 import com.w3engineers.highbandtest.util.Constant;
-import com.w3engineers.highbandtest.util.MeshLog;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -21,7 +22,7 @@ public class BluetoothClient {
     private BluetoothSocket bluetoothSocket;
     private Executor executor;
     private String myId;
-    private MessageListener bleListener;
+    private MessageListener messageListener;
     private BluetoothServer server;
     public BluetoothDevice mBluetoothDevice;
     private BluetoothAdapter bluetoothAdapter;
@@ -30,7 +31,7 @@ public class BluetoothClient {
 
         this.executor = Executors.newSingleThreadExecutor();
         this.myId = nodeId;
-        this.bleListener = bleListener;
+        this.messageListener = bleListener;
         this.server = server;
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     }
@@ -45,11 +46,12 @@ public class BluetoothClient {
                     bluetoothSocket.connect();
                     if (BleLink.getBleLink() != null) return;
 
-                    BleLink link = BleLink.on(bluetoothSocket, bleListener, LinkMode.CLIENT);
+                    BleLink link = BleLink.on(bluetoothSocket, messageListener, LinkMode.CLIENT);
                     link.start();
-                    //TODO send hello packet
+                    String hello = new Gson().toJson(new BtHello());
+                    link.writeFrame(hello.getBytes());
                     listener.onConnectionState(bluetoothDevice.getName(), true);
-
+                    messageListener.onBluetoothConnected(link);
                 } catch (IOException | IllegalThreadStateException e) {
                     Log.e("Bluetooth-dis", "Bt connection failed :" + e.getMessage());
                     e.printStackTrace();

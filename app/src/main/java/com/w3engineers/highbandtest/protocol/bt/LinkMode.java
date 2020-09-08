@@ -1,6 +1,6 @@
 package com.w3engineers.highbandtest.protocol.bt;
 
-enum LinkMode {
+public enum LinkMode {
     SERVER,
     CLIENT,
     INTERNET
