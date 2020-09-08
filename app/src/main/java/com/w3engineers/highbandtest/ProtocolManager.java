@@ -8,7 +8,12 @@ import com.w3engineers.highbandtest.protocol.bt.BluetoothServer;
 import com.w3engineers.highbandtest.protocol.bt.MessageListener;
 import com.w3engineers.highbandtest.util.MeshLog;
 
-class ProtocolManager implements MessageListener {
+public class ProtocolManager implements MessageListener {
+
+    public static final String SERVICE_TYPE = "xyz.m";
+    public static String mMyBTName = "abc";
+    public static String mMySSIDName;
+
     private BluetoothServer bluetoothServer;
     private BluetoothClient bluetoothClient;
     private static ProtocolManager protocolManager;
