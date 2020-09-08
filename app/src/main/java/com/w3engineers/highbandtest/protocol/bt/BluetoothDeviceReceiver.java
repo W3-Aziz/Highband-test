@@ -5,12 +5,21 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.w3engineers.highbandtest.util.MeshLog;
+
 import java.util.List;
 
-class BluetoothDeviceReceiver extends BroadcastReceiver {
+public class BluetoothDeviceReceiver extends BroadcastReceiver {
     public interface BTDiscoveryListener {
         void onBluetoothFound(List<BluetoothDevice> bluetoothDevices);
+
         void onScanFinished();
+    }
+
+    private BTDiscoveryListener btDiscoveryListener;
+
+    public BluetoothDeviceReceiver(BTDiscoveryListener listener) {
+        this.btDiscoveryListener = listener;
     }
 
 
@@ -22,6 +31,7 @@ class BluetoothDeviceReceiver extends BroadcastReceiver {
             case BluetoothDevice.ACTION_FOUND:
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 String name = device.getName();
+                MeshLog.v("Bluetooth device discovered :" + name);
         }
     }
 }

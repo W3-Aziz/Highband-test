@@ -4,5 +4,6 @@ import com.w3engineers.highbandtest.protocol.model.Credential;
 
 public interface MessageListener {
     void onBluetoothConnected(BleLink link);
+    void onBluetoothDisconnected();
     void onCredentialReceived(Credential credential);
 }

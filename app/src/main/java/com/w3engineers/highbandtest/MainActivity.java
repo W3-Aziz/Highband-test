@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
         if (PermissionUtil.init(this).request(Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION)) {
             requestDiscoverableTimePeriod();
+            startProtocolManager();
         }
     }
 
@@ -39,13 +40,14 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void startProtocolManager(){
-        Log.e("MainActivity", "Protocol manager started");
+        protocolManager = ProtocolManager.on(getApplicationContext());
+        protocolManager.startProtocol();
     }
 
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
+        Log.e("Permission-ask", "Protocol manager started :"+requestCode);
         if(PermissionUtil.REQUEST_CODE_PERMISSION_DEFAULT == requestCode){
             checkPermissionAndStartLib();
         }else if (requestCode == REQUEST_ENABLE_DSC) {

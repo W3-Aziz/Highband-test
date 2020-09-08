@@ -16,11 +16,6 @@ import java.util.concurrent.Executors;
  */
 public class MeshLog {
 
-    public interface MeshLogListener {
-        void onNewLog(String text);
-    }
-
-    public static MeshLogListener sMeshLogListener;
 
 
     private static String TAG = "MeshLog";
