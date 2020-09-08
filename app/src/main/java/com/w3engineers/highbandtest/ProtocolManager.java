@@ -20,7 +20,7 @@ import java.util.UUID;
 public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver.BTDiscoveryListener {
 
     public static final String SERVICE_TYPE = "xyz.m";
-    public static String mMyBTName = "abc";
+    //public static String mMyBTName = "abc";
     public static String mMySSIDName;
 
     private BluetoothServer bluetoothServer;

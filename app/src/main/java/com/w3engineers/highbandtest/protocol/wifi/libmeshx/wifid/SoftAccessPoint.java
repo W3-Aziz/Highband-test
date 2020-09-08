@@ -112,7 +112,7 @@ public class SoftAccessPoint implements WifiP2pManager.ConnectionInfoListener, W
     public SoftAccessPoint(Context context, SoftAPStateListener softAPStateListener) {
 
         //Read my BT name. Hardcoded string
-        mMyBTName = ProtocolManager.mMyBTName;
+        mMyBTName = ProtocolManager.BLUETOOTH_PREFIX;
 
         mLastWifiP2pDeviceList = new WiFiDevicesList();
         mSoftAPStateListener = softAPStateListener;
