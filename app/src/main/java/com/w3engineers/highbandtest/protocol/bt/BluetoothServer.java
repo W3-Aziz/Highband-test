@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 
 import com.google.gson.Gson;
+import com.w3engineers.highbandtest.ProtocolManager;
 import com.w3engineers.highbandtest.protocol.model.BtHello;
 import com.w3engineers.highbandtest.util.Constant;
 import com.w3engineers.highbandtest.util.MeshLog;
@@ -80,7 +81,7 @@ public class BluetoothServer {
 
                 BleLink link = BleLink.on(bluetoothSocket, messageListener, LinkMode.SERVER);
                 link.start();
-                String hello = new Gson().toJson(new BtHello());
+                String hello = new Gson().toJson(new BtHello(ProtocolManager.bluetoothName));
                 link.writeFrame(hello.getBytes());
 
                 messageListener.onBluetoothConnected(link);

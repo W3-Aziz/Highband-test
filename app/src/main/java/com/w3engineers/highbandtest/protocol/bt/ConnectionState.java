@@ -1,5 +1,5 @@
 package com.w3engineers.highbandtest.protocol.bt;
 
-interface ConnectionState {
+public interface ConnectionState {
     void onConnectionState(String deviceName, boolean isConnected);
 }

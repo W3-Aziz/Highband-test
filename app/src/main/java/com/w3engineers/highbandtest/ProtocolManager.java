@@ -4,15 +4,18 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.widget.Toast;
 
 import com.w3engineers.highbandtest.protocol.bt.BleLink;
 import com.w3engineers.highbandtest.protocol.bt.BluetoothClient;
 import com.w3engineers.highbandtest.protocol.bt.BluetoothDeviceReceiver;
 import com.w3engineers.highbandtest.protocol.bt.BluetoothServer;
+import com.w3engineers.highbandtest.protocol.bt.ConnectionState;
 import com.w3engineers.highbandtest.protocol.bt.LinkMode;
 import com.w3engineers.highbandtest.protocol.bt.MessageListener;
 import com.w3engineers.highbandtest.protocol.model.Credential;
 import com.w3engineers.highbandtest.protocol.wifi.libmeshx.wifid.WiFiDirectManagerLegacy;
+import com.w3engineers.highbandtest.util.HandlerUtil;
 import com.w3engineers.highbandtest.util.MeshLog;
 
 import java.util.ArrayList;
@@ -105,9 +108,9 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
         unregisterBluetoothReceiver();
         stopBtSearch();
         if (link.getLinkMode() == LinkMode.SERVER) {
-
+            showToast("Bt connected as master");
         } else {
-
+            showToast("Bt connected as client");
         }
     }
 
@@ -143,6 +146,22 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
 
 
     private void makeBtConnection(){
+        if(mBluetoothDevices.isEmpty()){
+            startBtSearch();
+        }else {
+            BluetoothDevice device = mBluetoothDevices.poll();
+            bluetoothClient.createConnection(device, new ConnectionState() {
+                @Override
+                public void onConnectionState(String deviceName, boolean isConnected) {
+                   if(!isConnected){
+                       makeBtConnection();
+                   }
+                }
+            });
+        }
+    }
 
+    private void showToast(String message){
+        HandlerUtil.postForeground(()-> Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show());
     }
 }
