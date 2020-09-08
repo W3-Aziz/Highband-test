@@ -6,6 +6,7 @@ import android.util.Config;
 import com.google.gson.Gson;
 import com.w3engineers.highbandtest.protocol.model.BaseMessage;
 import com.w3engineers.highbandtest.protocol.model.BtHello;
+import com.w3engineers.highbandtest.protocol.model.Credential;
 import com.w3engineers.highbandtest.util.Constant;
 import com.w3engineers.highbandtest.util.MeshLog;
 
@@ -209,6 +210,8 @@ public class BleLink extends Thread{
         BaseMessage message = new Gson().fromJson(msg, BaseMessage.class);
 
         if(message instanceof BtHello){
+
+        }else if(message instanceof Credential){
 
         }
     }

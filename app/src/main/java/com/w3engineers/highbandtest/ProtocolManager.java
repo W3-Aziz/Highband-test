@@ -7,9 +7,10 @@ import com.w3engineers.highbandtest.protocol.bt.BluetoothClient;
 import com.w3engineers.highbandtest.protocol.bt.BluetoothServer;
 import com.w3engineers.highbandtest.protocol.bt.LinkMode;
 import com.w3engineers.highbandtest.protocol.bt.MessageListener;
+import com.w3engineers.highbandtest.protocol.model.Credential;
 import com.w3engineers.highbandtest.util.MeshLog;
 
-class ProtocolManager implements MessageListener {
+public class ProtocolManager implements MessageListener {
     private BluetoothServer bluetoothServer;
     private BluetoothClient bluetoothClient;
     private static ProtocolManager protocolManager;
@@ -39,5 +40,10 @@ class ProtocolManager implements MessageListener {
         }else {
 
         }
+    }
+
+    @Override
+    public void onCredentialReceived(Credential credential) {
+
     }
 }
