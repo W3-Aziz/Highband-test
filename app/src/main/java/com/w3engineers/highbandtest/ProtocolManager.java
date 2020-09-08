@@ -12,6 +12,7 @@ import com.w3engineers.highbandtest.protocol.bt.BluetoothServer;
 import com.w3engineers.highbandtest.protocol.bt.LinkMode;
 import com.w3engineers.highbandtest.protocol.bt.MessageListener;
 import com.w3engineers.highbandtest.protocol.model.Credential;
+import com.w3engineers.highbandtest.protocol.wifi.libmeshx.wifid.WiFiDirectManagerLegacy;
 import com.w3engineers.highbandtest.util.MeshLog;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     public static final String SERVICE_TYPE = "xyz.m";
     //public static String mMyBTName = "abc";
     public static String mMySSIDName;
+    public static final int HTTP_PORT = 9999;
 
     private BluetoothServer bluetoothServer;
     private BluetoothClient bluetoothClient;
@@ -31,6 +33,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     private Context mContext;
     private BleLink mBleLink;
     public static final String BLUETOOTH_PREFIX = "prefix";
+    private WiFiDirectManagerLegacy mWiFiDirectManagerLegacy;
 
     private ProtocolManager(Context context) {
         this.mContext = context;
@@ -39,6 +42,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
         this.bluetoothServer.starListenThread();
         this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         mBluetoothDiscoveryReceiver = new BluetoothDeviceReceiver(this);
+        mWiFiDirectManagerLegacy = WiFiDirectManagerLegacy.getInstance(mContext, null, null, null);
     }
 
     public static ProtocolManager on(Context context) {
