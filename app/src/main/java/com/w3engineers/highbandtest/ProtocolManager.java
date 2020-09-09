@@ -13,6 +13,7 @@ import com.w3engineers.highbandtest.protocol.bt.BluetoothServer;
 import com.w3engineers.highbandtest.protocol.bt.ConnectionState;
 import com.w3engineers.highbandtest.protocol.bt.LinkMode;
 import com.w3engineers.highbandtest.protocol.bt.MessageListener;
+import com.w3engineers.highbandtest.protocol.data.AppMessageListener;
 import com.w3engineers.highbandtest.protocol.model.Credential;
 import com.w3engineers.highbandtest.protocol.wifi.libmeshx.wifid.WiFiDirectManagerLegacy;
 import com.w3engineers.highbandtest.util.HandlerUtil;
