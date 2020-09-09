@@ -8,9 +8,16 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
+import com.w3engineers.highbandtest.protocol.model.HelloMessage;
+import com.w3engineers.highbandtest.protocol.util.Constant;
+import com.w3engineers.highbandtest.protocol.util.WiFiUtil;
+import com.w3engineers.highbandtest.protocol.wifi.httpservices.MeshHttpServer;
 import com.w3engineers.highbandtest.util.MeshLog;
 import com.w3engineers.highbandtest.util.PermissionUtil;
+
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
     private ProtocolManager protocolManager;
@@ -51,6 +58,19 @@ public class MainActivity extends AppCompatActivity {
             checkPermissionAndStartLib();
         }else if (requestCode == REQUEST_ENABLE_DSC) {
             startProtocolManager();
+        }
+    }
+
+    public void sendMessage(View view) {
+        HelloMessage helloMessage = new HelloMessage(null);
+        helloMessage.hello = "Hello from:"+ WiFiUtil.getLocalIpAddress();
+
+        try {
+            MeshHttpServer.on().sendMessage(Constant.MASTER_IP_ADDRESS, helloMessage.toJson().getBytes());
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }
