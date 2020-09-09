@@ -50,7 +50,10 @@ public class BluetoothDeviceReceiver extends BroadcastReceiver {
                     MeshLog.v("Bluetooth device discovered :" + name);
                 }
 
-                HandlerUtil.postBackground(postDeviceList,DISCOVERY_NODE_CACHING_TIME);
+                if (mBluetoothDeviceMap.size() > 0) {
+                    btDiscoveryListener.onBluetoothFound(new ArrayList<>(mBluetoothDeviceMap.values()));
+                    mBluetoothDeviceMap.clear();
+                }
                 break;
 
                 case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
