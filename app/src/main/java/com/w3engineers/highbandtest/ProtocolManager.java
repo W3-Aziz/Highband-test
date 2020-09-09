@@ -149,7 +149,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
 
     private void sendCredential() {
         APCredentials credential = mWiFiDirectManagerLegacy.getAPCredentials();
-        if (credential != null) {
+        if (credential != null && mBleLink != null) {
             MeshLog.v("BT credential send.. ssid: " + credential.mSSID + " pass :" + credential.mPassPhrase);
             Credential credentialMessage = new Credential(credential.mSSID, credential.mPassPhrase);
             String string = new Gson().toJson(credentialMessage);
