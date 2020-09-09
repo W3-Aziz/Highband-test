@@ -88,12 +88,12 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
                 MeshLog.v("Periodic BT search triggered");
                 startBtSearch();
             }
-            HandlerUtil.postForeground(this, BT_SEARCH_DELAY);
+            HandlerUtil.postBackground(this, BT_SEARCH_DELAY);
         }
     };
 
     private void runPeriodicBtSearchThread() {
-        HandlerUtil.postForeground(periodicBluetoothSearchRunnable, BT_SEARCH_DELAY);
+        HandlerUtil.postBackground(periodicBluetoothSearchRunnable, BT_SEARCH_DELAY);
     }
 
 
