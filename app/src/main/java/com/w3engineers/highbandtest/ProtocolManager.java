@@ -139,6 +139,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     @Override
     public void onBluetoothConnected(BleLink link) {
         mBleLink = link;
+        bluetoothServer.stopListenThread();
         unregisterBluetoothReceiver();
         stopBtSearch();
         if (link.getLinkMode() == LinkMode.SERVER) {
