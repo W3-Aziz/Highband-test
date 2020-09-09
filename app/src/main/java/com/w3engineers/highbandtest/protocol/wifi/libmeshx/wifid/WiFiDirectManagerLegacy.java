@@ -275,7 +275,6 @@ public class WiFiDirectManagerLegacy {
             mWiFiClient = new WiFiClient(mContext);
         }
         //Always set the listener
-        mWiFiClient.setConnectionListener(mConnectionListener);
         mWiFiClient.setMeshXLogListener(mMeshXLogListener);
 
         if (startTask == START_TASK_ONLY_AP || startTask == START_TASK_ALL) {
@@ -517,12 +516,21 @@ public class WiFiDirectManagerLegacy {
         return mWiFiClient.connect(credential.ssid, credential.password, new WiFiClient.ConneectionListener() {
             @Override
             public void onConnected(WifiInfo wifiConnectionInfo, String passPhrase) {
-                mSSIDConnectionAttempt = 0;
-                mWiFiClient.setConnectionListener(mConnectionListener);
-                mAPCredentials = new APCredentials(wifiConnectionInfo.getSSID(), passPhrase);
+                if(WiFiUtil.isSameSSID(wifiConnectionInfo.getSSID(), credential.ssid)) {
+                    mSSIDConnectionAttempt = 0;
+                    mAPCredentials = new APCredentials(wifiConnectionInfo.getSSID(), passPhrase);
 
-                if(mConnectionListener != null) {
-                    mConnectionListener.onConnected(wifiConnectionInfo, passPhrase);
+                    if (mConnectionListener != null) {
+                        mConnectionListener.onConnected(wifiConnectionInfo, passPhrase);
+                    }
+                } else {
+                    if(++mSSIDConnectionAttempt < MAX_SSID_CONNECTION_ATTEMPT) {
+                        connectWithAP(credential);
+                    } else {
+                        mSSIDConnectionAttempt = 0;
+                        mConnectingSSID = null;
+                    }
+
                 }
             }
 
@@ -532,15 +540,6 @@ public class WiFiDirectManagerLegacy {
                     connectWithAP(credential);
                 } else {
                     mSSIDConnectionAttempt = 0;
-                    mWiFiClient.setConnectionListener(mConnectionListener);
-
-                    if(mWiFiMeshConfig.mIsGroupOwner) {
-                        mSoftAccessPoint.start();
-
-                    } else if(mWiFiMeshConfig.mIsClient && mSoftAccessPointSearcher != null) {
-
-                        mSoftAccessPointSearcher.start();
-                    }
                     mConnectingSSID = null;
                 }
             }
@@ -548,15 +547,6 @@ public class WiFiDirectManagerLegacy {
             @Override
             public void onDisconnected() {
                 mSSIDConnectionAttempt = 0;
-                mWiFiClient.setConnectionListener(mConnectionListener);
-
-                if(mWiFiMeshConfig.mIsGroupOwner) {
-                    mSoftAccessPoint.Stop();
-
-                } else if(mWiFiMeshConfig.mIsClient && mSoftAccessPointSearcher != null) {
-
-                    mSoftAccessPointSearcher.start();
-                }
 
                 mConnectingSSID = null;
             }
