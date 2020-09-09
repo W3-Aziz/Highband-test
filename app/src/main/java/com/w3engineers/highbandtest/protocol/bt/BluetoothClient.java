@@ -29,6 +29,8 @@ public class BluetoothClient {
     public BluetoothDevice mBluetoothDevice;
     private BluetoothAdapter bluetoothAdapter;
 
+    private volatile boolean isConnecting = false;
+
     public BluetoothClient(String nodeId, MessageListener bleListener, BluetoothServer server) {
 
         this.executor = Executors.newSingleThreadExecutor();
@@ -37,11 +39,15 @@ public class BluetoothClient {
         this.server = server;
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     }
+    public boolean isBtConnecting(){
+        return isConnecting;
+    }
 
     public void createConnection(final BluetoothDevice bluetoothDevice, final ConnectionState listener) {
         try {
             executor.execute(() -> {
                 try {
+                    isConnecting = true;
                     bluetoothAdapter.cancelDiscovery();
                     bluetoothSocket = createBluetoothSocket(bluetoothDevice, Constant.MY_UUID_INSECURE);
 
@@ -56,6 +62,7 @@ public class BluetoothClient {
                     listener.onConnectionState(bluetoothDevice.getName(), true);
                     messageListener.onBluetoothConnected(link);
                     MeshLog.v("Bluetooth connection success");
+                    isConnecting = false;
                 } catch (IOException | IllegalThreadStateException e) {
                     MeshLog.v("Bluetooth connection failed");
                     Log.e("Bluetooth-dis", "Bt connection failed :" + e.getMessage());
@@ -68,10 +75,11 @@ public class BluetoothClient {
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
+                    isConnecting = false;
                 }
             });
         } catch (RejectedExecutionException executionException) {
-
+            isConnecting = false;
         }
 
     }

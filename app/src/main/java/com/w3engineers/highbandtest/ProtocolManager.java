@@ -47,7 +47,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     private BluetoothAdapter bluetoothAdapter;
     private Context mContext;
     private BleLink mBleLink;
-    public static final String BLUETOOTH_PREFIX = "helo";
+    public static final String BLUETOOTH_PREFIX = "work";
     public static String bluetoothName;
     private WiFiDirectManagerLegacy mWiFiDirectManagerLegacy;
     public AppMessageListener mAppMessageListener;
@@ -235,6 +235,11 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
 
     private void makeBtConnection() {
         if (!mBluetoothDevices.isEmpty()) {
+
+            if(bluetoothClient.isBtConnecting()){
+                return;
+            }
+
             BluetoothDevice device = mBluetoothDevices.poll();
             MeshLog.v("Attempt to connect bt connection :"+device.getName());
             bluetoothClient.createConnection(device, new ConnectionState() {
