@@ -46,7 +46,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     private BluetoothAdapter bluetoothAdapter;
     private Context mContext;
     private BleLink mBleLink;
-    public static final String BLUETOOTH_PREFIX = "hepy";
+    public static final String BLUETOOTH_PREFIX = "abc";
     public static String bluetoothName;
     private WiFiDirectManagerLegacy mWiFiDirectManagerLegacy;
     public AppMessageListener mAppMessageListener;
@@ -67,7 +67,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
         mWiFiDirectManagerLegacy.mConnectionListener = new WiFiClient.ConneectionListener() {
             @Override
             public void onConnected(WifiInfo wifiConnectionInfo, String passPhrase) {
-                MeshLog.v("... Wifi connected .............");
+                MeshLog.v("[highband] Wifi connected .............");
                 if(mBleLink != null) {
                     mBleLink.notifyDisconnect(getClass().getSimpleName());
                 }
@@ -164,6 +164,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
         unregisterBluetoothReceiver();
         stopBtSearch();
         if (link.getLinkMode() == LinkMode.SERVER) {
+            MeshLog.v("[highBand]Link mode server");
             showToast("Bt connected as master");
 
             mWiFiDirectManagerLegacy.mWiFiMeshConfig = new WiFiMeshConfig();
@@ -171,6 +172,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
 
             mWiFiDirectManagerLegacy.start();
         } else {
+            MeshLog.v("[highBand]Link mode client");
             showToast("Bt connected as client");
             mWiFiDirectManagerLegacy.mWiFiMeshConfig = new WiFiMeshConfig();
             mWiFiDirectManagerLegacy.mWiFiMeshConfig.mIsClient = true;
@@ -178,7 +180,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
             mWiFiDirectManagerLegacy.start();
         }
 
-        HandlerUtil.postForeground(() -> sendCredential(), 1500);
+        HandlerUtil.postBackground(() -> sendCredential(), 1500);
     }
 
     @Override
