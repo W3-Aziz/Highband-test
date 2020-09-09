@@ -26,7 +26,8 @@ public class BaseMessage {
         if(mGson == null) {
             RuntimeTypeAdapterFactory<BaseMessage> typeAdapterFactory = RuntimeTypeAdapterFactory
                     .of(BaseMessage.class, "type")
-                    .registerSubtype(HelloMessage.class, HelloMessage.class.getSimpleName());
+                    .registerSubtype(HelloMessage.class, HelloMessage.class.getSimpleName())
+                    .registerSubtype(Credential.class, Credential.class.getSimpleName());
 
             mGson = new GsonBuilder().setExclusionStrategies(new HiddenAnnotationExclusionStrategy())
                     .registerTypeAdapterFactory(typeAdapterFactory)

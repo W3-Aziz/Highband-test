@@ -172,6 +172,9 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
             mWiFiDirectManagerLegacy.mWiFiMeshConfig.mIsGroupOwner = true;
 
             mWiFiDirectManagerLegacy.start();
+        } else {
+            MeshLog.v("[highBand]Link mode client");
+            showToast("Bt connected as client");
         }
 
         HandlerUtil.postBackground(() -> sendCredential(), 1500);
