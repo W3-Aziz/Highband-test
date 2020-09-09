@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 
 import com.google.gson.Gson;
+import com.w3engineers.highbandtest.ProtocolManager;
 import com.w3engineers.highbandtest.protocol.model.HelloMessage;
 import com.w3engineers.highbandtest.util.Constant;
 import com.w3engineers.highbandtest.util.MeshLog;
