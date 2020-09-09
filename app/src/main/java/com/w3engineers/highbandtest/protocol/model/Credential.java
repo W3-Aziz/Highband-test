@@ -8,4 +8,12 @@ public class Credential extends BaseMessage{
         this.ssid = ssid;
         this.password = password;
     }
+
+    @Override
+    public String toString() {
+        return "Credential{" +
+                "ssid='" + ssid + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }

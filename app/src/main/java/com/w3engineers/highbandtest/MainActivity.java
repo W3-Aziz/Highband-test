@@ -77,13 +77,15 @@ public class MainActivity extends AppCompatActivity {
         HelloMessage helloMessage = new HelloMessage(null);
         helloMessage.hello = "Hello from:"+ WiFiUtil.getLocalIpAddress();
 
-        try {
-            MeshHttpServer.on().sendMessage(Constant.MASTER_IP_ADDRESS, helloMessage.toJson().getBytes());
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        new Thread(() -> {
+            try {
+                MeshHttpServer.on().sendMessage(Constant.MASTER_IP_ADDRESS, helloMessage.toJson().getBytes());
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     public void sendBtMessage(View view){
