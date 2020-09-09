@@ -99,7 +99,7 @@ public class BluetoothServer {
                     try {
                         bluetoothServerSocket.close();
                         isBtConnected = false;
-                        MeshLog.i(" BLE Server Closed");
+                        //MeshLog.i(" BLE Server Closed");
                     } catch (IOException e) {
 //                        e.printStackTrace();
                     }
