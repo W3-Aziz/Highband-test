@@ -31,24 +31,12 @@ public class BleLink extends Thread {
         DISCONNECTED
     }
 
-    private int RANDOM_DELAY_MAX = 16;
-    private int RANDOM_DELAY_MIN = 12;
-
     private volatile State state = State.CONNECTING;
     private BluetoothSocket bSocket;
     private DataInputStream in;
     private DataOutputStream out;
     private MessageListener messageListener;
-    private Queue<byte[]> outputQueue = new LinkedList<>();
-
-    private volatile boolean shouldCloseWhenOutputIsEmpty = false;
-    private String nodeId;
-    private ScheduledThreadPoolExecutor pool;
-    private ExecutorService outputExecutor;
     private LinkMode linkMode;
-    public int mUserMode;
-    public String publicKey;
-    public static final long BT_TIMEOUT = 50 * 1000;
 
     private static BleLink mBleLink;
     private static Object object = new Object();
@@ -225,8 +213,6 @@ public class BleLink extends Thread {
         } catch (IOException e) {
             //CrashReporter.logException(e);
         }
-        pool.shutdown();
-        outputExecutor.shutdown();
 
         HandlerUtil.postBackground(() -> messageListener.onBluetoothDisconnected());
 
