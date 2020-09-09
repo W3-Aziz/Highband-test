@@ -194,8 +194,8 @@ public class BleLink extends Thread {
     }
 
     private void processMessage(String msg) {
-        BaseMessage message = new Gson().fromJson(msg, BaseMessage.class);
-        MeshLog.v("Bluetooth data read success++++");
+        BaseMessage message = BaseMessage.toBaseMessage(msg);
+
         if (message instanceof HelloMessage) {
            // messageListener.onBluetoothConnected(this);
             messageListener.onHelloMessageReceiver((HelloMessage) message);
