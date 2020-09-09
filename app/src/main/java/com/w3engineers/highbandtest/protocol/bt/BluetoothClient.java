@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.w3engineers.highbandtest.protocol.model.HelloMessage;
 import com.w3engineers.highbandtest.ProtocolManager;
 import com.w3engineers.highbandtest.util.Constant;
+import com.w3engineers.highbandtest.util.MeshLog;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -51,9 +52,12 @@ public class BluetoothClient {
                     link.start();
                     String hello = new Gson().toJson(new HelloMessage(ProtocolManager.bluetoothName));
                     link.writeFrame(hello.getBytes());
+                    server.stopListenThread();
                     listener.onConnectionState(bluetoothDevice.getName(), true);
                     messageListener.onBluetoothConnected(link);
+                    MeshLog.v("Bluetooth connection success");
                 } catch (IOException | IllegalThreadStateException e) {
+                    MeshLog.v("Bluetooth connection failed");
                     Log.e("Bluetooth-dis", "Bt connection failed :" + e.getMessage());
                     e.printStackTrace();
                     try {

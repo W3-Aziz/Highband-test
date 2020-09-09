@@ -85,4 +85,8 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    public void sendBtMessage(View view){
+        protocolManager.sendBtMessage();
+    }
 }

@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothSocket;
 
 import com.google.gson.Gson;
 import com.w3engineers.highbandtest.protocol.model.BaseMessage;
+import com.w3engineers.highbandtest.protocol.model.BtMessage;
 import com.w3engineers.highbandtest.protocol.model.HelloMessage;
 import com.w3engineers.highbandtest.protocol.model.Credential;
 import com.w3engineers.highbandtest.util.Constant;
@@ -86,6 +87,8 @@ public class BleLink extends Thread {
             out.write(header.array());
             out.write(buffer);
             out.flush();
+
+            MeshLog.v("Bluetooth data write success++++");
         } catch (IOException ex) {
             MeshLog.e(" Message Write fails in BlueTooth Link" + ex.getMessage());
             try {
@@ -192,11 +195,14 @@ public class BleLink extends Thread {
 
     private void processMessage(String msg) {
         BaseMessage message = new Gson().fromJson(msg, BaseMessage.class);
-
+        MeshLog.v("Bluetooth data read success++++");
         if (message instanceof HelloMessage) {
+           // messageListener.onBluetoothConnected(this);
             messageListener.onHelloMessageReceiver((HelloMessage) message);
         } else if (message instanceof Credential) {
             messageListener.onCredentialReceived((Credential) message);
+        }else if(message instanceof BtMessage){
+            messageListener.onBtMessageReceived((BtMessage)message);
         }
     }
 

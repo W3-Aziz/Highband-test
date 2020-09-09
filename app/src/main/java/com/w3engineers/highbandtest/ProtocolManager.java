@@ -16,6 +16,7 @@ import com.w3engineers.highbandtest.protocol.bt.ConnectionState;
 import com.w3engineers.highbandtest.protocol.bt.LinkMode;
 import com.w3engineers.highbandtest.protocol.bt.MessageListener;
 import com.w3engineers.highbandtest.protocol.data.AppMessageListener;
+import com.w3engineers.highbandtest.protocol.model.BtMessage;
 import com.w3engineers.highbandtest.protocol.model.Credential;
 import com.w3engineers.highbandtest.protocol.model.HelloMessage;
 import com.w3engineers.highbandtest.protocol.wifi.libmeshx.wifi.WiFiClient;
@@ -46,7 +47,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     private BluetoothAdapter bluetoothAdapter;
     private Context mContext;
     private BleLink mBleLink;
-    public static final String BLUETOOTH_PREFIX = "hepy";
+    public static final String BLUETOOTH_PREFIX = "helo";
     public static String bluetoothName;
     private WiFiDirectManagerLegacy mWiFiDirectManagerLegacy;
     public AppMessageListener mAppMessageListener;
@@ -171,6 +172,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
 
             mWiFiDirectManagerLegacy.start();
         } else {
+
             showToast("Bt connected as client");
             mWiFiDirectManagerLegacy.mWiFiMeshConfig = new WiFiMeshConfig();
             mWiFiDirectManagerLegacy.mWiFiMeshConfig.mIsClient = true;
@@ -178,7 +180,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
             mWiFiDirectManagerLegacy.start();
         }
 
-        HandlerUtil.postForeground(() -> sendCredential(), 1500);
+        //HandlerUtil.postForeground(() -> sendCredential(), 1500);
     }
 
     @Override
@@ -209,6 +211,11 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
         }
     }
 
+    @Override
+    public void onBtMessageReceived(BtMessage btMessage) {
+        showToast(btMessage.message);
+    }
+
 
     @Override
     public void onBluetoothFound(List<BluetoothDevice> bluetoothDevices) {
@@ -229,10 +236,9 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
 
 
     private void makeBtConnection() {
-        if (mBluetoothDevices.isEmpty()) {
-            startBtSearch();
-        } else {
+        if (!mBluetoothDevices.isEmpty()) {
             BluetoothDevice device = mBluetoothDevices.poll();
+            MeshLog.v("Attempt to connect bt connection :"+device.getName());
             bluetoothClient.createConnection(device, new ConnectionState() {
                 @Override
                 public void onConnectionState(String deviceName, boolean isConnected) {
@@ -246,5 +252,19 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
 
     private void showToast(String message) {
         HandlerUtil.postForeground(() -> Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show());
+    }
+
+    public void sendBtMessage() {
+        HandlerUtil.postBackground(new Runnable() {
+            @Override
+            public void run() {
+                if(mBleLink != null){
+                    BtMessage btMessage = new BtMessage("Bt message received");
+                    mBleLink.writeFrame(btMessage.toJson().getBytes());
+                }else {
+                    showToast("BT link null");
+                }
+            }
+        });
     }
 }
