@@ -35,6 +35,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     //public static String mMyBTName = "abc";
     public static String mMySSIDName;
     public static final int HTTP_PORT = 9999;
+    private final long BT_SEARCH_DELAY = 15000;
 
     private BluetoothServer bluetoothServer;
     private BluetoothClient bluetoothClient;
@@ -77,7 +78,23 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
         bluetoothAdapter.setName(bluetoothName);
         registerBTDiscoveryReceiver();
         startBtSearch();
+        runPeriodicBtSearchThread();
     }
+
+    private Runnable periodicBluetoothSearchRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mBleLink == null) {
+                startBtSearch();
+            }
+            HandlerUtil.postForeground(periodicBluetoothSearchRunnable, BT_SEARCH_DELAY);
+        }
+    };
+
+    private void runPeriodicBtSearchThread() {
+        HandlerUtil.postForeground(periodicBluetoothSearchRunnable, BT_SEARCH_DELAY);
+    }
+
 
     private String getRandomString() {
         String uuid = UUID.randomUUID().toString();
@@ -107,9 +124,9 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
         bluetoothAdapter.cancelDiscovery();
     }
 
-    private void sendCredential(){
+    private void sendCredential() {
         APCredentials credential = mWiFiDirectManagerLegacy.getAPCredentials();
-        if(credential != null) {
+        if (credential != null) {
             Credential credentialMessage = new Credential(credential.mSSID, credential.mPassPhrase);
             String string = new Gson().toJson(credentialMessage);
             mBleLink.writeFrame(string.getBytes());
@@ -137,11 +154,12 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
             mWiFiDirectManagerLegacy.start();
         }
 
-        HandlerUtil.postForeground(()->sendCredential(), 1500);
+        HandlerUtil.postForeground(() -> sendCredential(), 1500);
     }
 
     @Override
     public void onBluetoothDisconnected() {
+        mBleLink = null;
         /*bluetoothServer.starListenThread();
         registerBTDiscoveryReceiver();
         startBtSearch();*/
@@ -149,7 +167,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
 
     @Override
     public void onCredentialReceived(Credential credential) {
-        if(mWiFiDirectManagerLegacy != null) {
+        if (mWiFiDirectManagerLegacy != null) {
             mWiFiDirectManagerLegacy.connectWithAP(credential.ssid, credential.password);
         }
     }
@@ -161,7 +179,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
 
     @Override
     public void onMessage(String message) {
-        if(mAppMessageListener != null) {
+        if (mAppMessageListener != null) {
             mAppMessageListener.onMessage(message);
         }
     }
@@ -169,13 +187,13 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
 
     @Override
     public void onBluetoothFound(List<BluetoothDevice> bluetoothDevices) {
-        for (BluetoothDevice item : bluetoothDevices){
-            if(!connectedDeviceBtName.contains(item.getName())){
+        for (BluetoothDevice item : bluetoothDevices) {
+            if (!connectedDeviceBtName.contains(item.getName())) {
                 mBluetoothDevices.add(item);
             }
         }
 
-        if(!mBluetoothDevices.isEmpty()){
+        if (!mBluetoothDevices.isEmpty()) {
             makeBtConnection();
         }
     }
@@ -185,23 +203,23 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     }
 
 
-    private void makeBtConnection(){
-        if(mBluetoothDevices.isEmpty()){
+    private void makeBtConnection() {
+        if (mBluetoothDevices.isEmpty()) {
             startBtSearch();
-        }else {
+        } else {
             BluetoothDevice device = mBluetoothDevices.poll();
             bluetoothClient.createConnection(device, new ConnectionState() {
                 @Override
                 public void onConnectionState(String deviceName, boolean isConnected) {
-                   if(!isConnected){
-                       makeBtConnection();
-                   }
+                    if (!isConnected) {
+                        makeBtConnection();
+                    }
                 }
             });
         }
     }
 
-    private void showToast(String message){
-        HandlerUtil.postForeground(()-> Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show());
+    private void showToast(String message) {
+        HandlerUtil.postForeground(() -> Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show());
     }
 }
