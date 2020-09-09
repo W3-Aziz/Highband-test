@@ -191,7 +191,7 @@ public class BleLink extends Thread {
     }
 
     private void processMessage(String msg) {
-        BaseMessage message = new Gson().fromJson(msg, BaseMessage.class);
+        BaseMessage message = BaseMessage.toBaseMessage(msg);
 
         if (message instanceof HelloMessage) {
             messageListener.onHelloMessageReceiver((HelloMessage) message);
