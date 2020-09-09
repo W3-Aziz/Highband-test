@@ -496,7 +496,7 @@ public class WiFiDirectManagerLegacy {
             mWiFiClient = new WiFiClient(mContext);
         }
 
-        if(mWiFiMeshConfig.mIsGroupOwner && mSoftAccessPoint != null) {
+        if(mWiFiMeshConfig != null && mWiFiMeshConfig.mIsGroupOwner && mSoftAccessPoint != null) {
             if(WiFiUtil.isSameSSID(credential.ssid, mSoftAccessPoint.mNetworkName)) {
                 //Was attempting to connect with self SSID
                 Log.e("Highband-bt","High band credential same ssid");
@@ -506,7 +506,7 @@ public class WiFiDirectManagerLegacy {
                 mSoftAccessPoint.Stop();
                 AndroidUtil.sleep(2000);
             }
-        } else if(mWiFiMeshConfig.mIsClient && mSoftAccessPointSearcher != null) {
+        } else if(mWiFiMeshConfig != null && mWiFiMeshConfig.mIsClient && mSoftAccessPointSearcher != null) {
             mSoftAccessPointSearcher.stop();
             AndroidUtil.sleep(2000);
         }
