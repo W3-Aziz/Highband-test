@@ -47,7 +47,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void startProtocolManager(){
-        ProtocolManager.on(getApplicationContext()).startProtocol();
+        protocolManager = ProtocolManager.on(getApplicationContext());
+        protocolManager.startProtocol();
+        MeshHttpServer.on().start(protocolManager, ProtocolManager.HTTP_PORT);
     }
 
 

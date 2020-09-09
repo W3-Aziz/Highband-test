@@ -34,7 +34,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     public static final String SERVICE_TYPE = "xyz.m";
     //public static String mMyBTName = "abc";
     public static String mMySSIDName;
-    public static final int HTTP_PORT = 9999;
+    public static final int HTTP_PORT = 6565;
     private final long BT_SEARCH_DELAY = 15000;
 
     private BluetoothServer bluetoothServer;
@@ -44,7 +44,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     private BluetoothAdapter bluetoothAdapter;
     private Context mContext;
     private BleLink mBleLink;
-    public static final String BLUETOOTH_PREFIX = "prefix";
+    public static final String BLUETOOTH_PREFIX = "axy";
     public static String bluetoothName;
     private WiFiDirectManagerLegacy mWiFiDirectManagerLegacy;
     public AppMessageListener mAppMessageListener;
@@ -168,7 +168,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     @Override
     public void onCredentialReceived(Credential credential) {
         if (mWiFiDirectManagerLegacy != null) {
-            mWiFiDirectManagerLegacy.connectWithAP(credential.ssid, credential.password);
+            mWiFiDirectManagerLegacy.connectWithAP(credential);
         }
     }
 
