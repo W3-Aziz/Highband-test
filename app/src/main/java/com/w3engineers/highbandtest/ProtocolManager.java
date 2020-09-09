@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.net.wifi.WifiInfo;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -17,6 +18,7 @@ import com.w3engineers.highbandtest.protocol.bt.MessageListener;
 import com.w3engineers.highbandtest.protocol.data.AppMessageListener;
 import com.w3engineers.highbandtest.protocol.model.Credential;
 import com.w3engineers.highbandtest.protocol.model.HelloMessage;
+import com.w3engineers.highbandtest.protocol.wifi.libmeshx.wifi.WiFiClient;
 import com.w3engineers.highbandtest.protocol.wifi.libmeshx.wifid.APCredentials;
 import com.w3engineers.highbandtest.protocol.wifi.libmeshx.wifid.WiFiDirectManagerLegacy;
 import com.w3engineers.highbandtest.protocol.wifi.libmeshx.wifid.WiFiMeshConfig;
@@ -34,7 +36,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     public static final String SERVICE_TYPE = "xyz.m";
     //public static String mMyBTName = "abc";
     public static String mMySSIDName;
-    public static final int HTTP_PORT = 9999;
+    public static final int HTTP_PORT = 6565;
     private final long BT_SEARCH_DELAY = 15000;
 
     private BluetoothServer bluetoothServer;
@@ -44,7 +46,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     private BluetoothAdapter bluetoothAdapter;
     private Context mContext;
     private BleLink mBleLink;
-    public static final String BLUETOOTH_PREFIX = "maxfix";
+    public static final String BLUETOOTH_PREFIX = "axy";
     public static String bluetoothName;
     private WiFiDirectManagerLegacy mWiFiDirectManagerLegacy;
     public AppMessageListener mAppMessageListener;
@@ -62,6 +64,24 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
         this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         mBluetoothDiscoveryReceiver = new BluetoothDeviceReceiver(this);
         mWiFiDirectManagerLegacy = WiFiDirectManagerLegacy.getInstance(mContext, null, null, null);
+        mWiFiDirectManagerLegacy.mConnectionListener = new WiFiClient.ConneectionListener() {
+            @Override
+            public void onConnected(WifiInfo wifiConnectionInfo, String passPhrase) {
+                if(mBleLink != null) {
+                    mBleLink.notifyDisconnect(getClass().getSimpleName());
+                }
+            }
+
+            @Override
+            public void onTimeOut() {
+
+            }
+
+            @Override
+            public void onDisconnected() {
+
+            }
+        };
     }
 
     public static ProtocolManager on(Context context) {
@@ -163,16 +183,16 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     @Override
     public void onBluetoothDisconnected() {
         mBleLink = null;
-        /*bluetoothServer.starListenThread();
-        registerBTDiscoveryReceiver();
-        startBtSearch();*/
+        bluetoothServer.starListenThread();
+//        registerBTDiscoveryReceiver();
+//        startBtSearch();
     }
 
     @Override
     public void onCredentialReceived(Credential credential) {
         if (mWiFiDirectManagerLegacy != null) {
             MeshLog.v("BT credential received ssid :" + credential.ssid + " password :" + credential.password);
-            mWiFiDirectManagerLegacy.connectWithAP(credential.ssid, credential.password);
+            mWiFiDirectManagerLegacy.connectWithAP(credential);
         }
     }
 
