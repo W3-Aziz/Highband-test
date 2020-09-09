@@ -4,7 +4,7 @@ public class HelloMessage extends BaseMessage{
     public String hello = "Hello";
     public String bleName;
 
-    public BtHello(String bleName) {
+    public HelloMessage(String bleName) {
         this.bleName = bleName;
     }
 }
