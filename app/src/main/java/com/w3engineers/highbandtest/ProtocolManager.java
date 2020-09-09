@@ -44,7 +44,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     private BluetoothAdapter bluetoothAdapter;
     private Context mContext;
     private BleLink mBleLink;
-    public static final String BLUETOOTH_PREFIX = "prefix";
+    public static final String BLUETOOTH_PREFIX = "maxfix";
     public static String bluetoothName;
     private WiFiDirectManagerLegacy mWiFiDirectManagerLegacy;
     public AppMessageListener mAppMessageListener;
@@ -85,9 +85,10 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
         @Override
         public void run() {
             if (mBleLink == null) {
+                MeshLog.v("Periodic BT search triggered");
                 startBtSearch();
             }
-            HandlerUtil.postForeground(periodicBluetoothSearchRunnable, BT_SEARCH_DELAY);
+            HandlerUtil.postForeground(this, BT_SEARCH_DELAY);
         }
     };
 
@@ -127,6 +128,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     private void sendCredential() {
         APCredentials credential = mWiFiDirectManagerLegacy.getAPCredentials();
         if (credential != null) {
+            MeshLog.v("BT credential send.. ssid: " + credential.mSSID + " pass :" + credential.mPassPhrase);
             Credential credentialMessage = new Credential(credential.mSSID, credential.mPassPhrase);
             String string = new Gson().toJson(credentialMessage);
             mBleLink.writeFrame(string.getBytes());
@@ -168,6 +170,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     @Override
     public void onCredentialReceived(Credential credential) {
         if (mWiFiDirectManagerLegacy != null) {
+            MeshLog.v("BT credential received ssid :" + credential.ssid + " password :" + credential.password);
             mWiFiDirectManagerLegacy.connectWithAP(credential.ssid, credential.password);
         }
     }
