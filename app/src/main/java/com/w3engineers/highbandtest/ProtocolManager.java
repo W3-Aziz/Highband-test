@@ -47,7 +47,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     private BluetoothAdapter bluetoothAdapter;
     private Context mContext;
     private BleLink mBleLink;
-    public static final String BLUETOOTH_PREFIX = "work";
+    public static final String BLUETOOTH_PREFIX = "qupe";
     public static String bluetoothName;
     private WiFiDirectManagerLegacy mWiFiDirectManagerLegacy;
     public AppMessageListener mAppMessageListener;
@@ -69,7 +69,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
             @Override
             public void onConnected(WifiInfo wifiConnectionInfo, String passPhrase) {
                 MeshLog.v("[highband] Wifi connected .............");
-                if(mBleLink != null) {
+                if (mBleLink != null) {
                     mBleLink.notifyDisconnect(getClass().getSimpleName());
                 }
             }
@@ -154,6 +154,8 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
             Credential credentialMessage = new Credential(credential.mSSID, credential.mPassPhrase);
             String string = new Gson().toJson(credentialMessage);
             mBleLink.writeFrame(string.getBytes());
+        } else {
+            MeshLog.v("BT credential send.. null: ");
         }
     }
 
@@ -236,12 +238,12 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     private void makeBtConnection() {
         if (!mBluetoothDevices.isEmpty()) {
 
-            if(bluetoothClient.isBtConnecting()){
+            if (bluetoothClient.isBtConnecting()) {
                 return;
             }
 
             BluetoothDevice device = mBluetoothDevices.poll();
-            MeshLog.v("Attempt to connect bt connection :"+device.getName());
+            MeshLog.v("Attempt to connect bt connection :" + device.getName());
             bluetoothClient.createConnection(device, new ConnectionState() {
                 @Override
                 public void onConnectionState(String deviceName, boolean isConnected) {
@@ -261,10 +263,10 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
         HandlerUtil.postBackground(new Runnable() {
             @Override
             public void run() {
-                if(mBleLink != null){
+                if (mBleLink != null) {
                     BtMessage btMessage = new BtMessage("Bt message received");
                     mBleLink.writeFrame(btMessage.toJson().getBytes());
-                }else {
+                } else {
                     showToast("BT link null");
                 }
             }
