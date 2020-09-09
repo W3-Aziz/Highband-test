@@ -178,7 +178,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
             showToast("Bt connected as client");
         }
 
-        HandlerUtil.postBackground(() -> sendCredential(), 1500);
+        //HandlerUtil.postBackground(() -> sendCredential(), 1500);
     }
 
     @Override
