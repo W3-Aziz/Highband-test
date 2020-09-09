@@ -11,6 +11,7 @@ import com.w3engineers.highbandtest.ProtocolManager;
 import com.w3engineers.highbandtest.R;
 import com.w3engineers.highbandtest.protocol.data.AppMessageListener;
 import com.w3engineers.highbandtest.protocol.model.HelloMessage;
+import com.w3engineers.highbandtest.protocol.util.Constant;
 import com.w3engineers.highbandtest.protocol.util.P2PUtil;
 import com.w3engineers.highbandtest.protocol.util.WiFiUtil;
 import com.w3engineers.highbandtest.protocol.wifi.httpservices.MeshHttpServer;
@@ -61,7 +62,7 @@ public class WiFiActivity extends AppCompatActivity {
         helloMessage.hello = "Hello from:"+ WiFiUtil.getLocalIpAddress();
 
         try {
-            MeshHttpServer.on().sendMessage("192.168.49.1", helloMessage.toJson().getBytes());
+            MeshHttpServer.on().sendMessage(Constant.MASTER_IP_ADDRESS, helloMessage.toJson().getBytes());
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

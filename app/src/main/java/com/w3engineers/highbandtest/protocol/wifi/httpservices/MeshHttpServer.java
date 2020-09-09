@@ -8,6 +8,7 @@ import com.w3engineers.highbandtest.App;
 import com.w3engineers.highbandtest.protocol.bt.MessageListener;
 import com.w3engineers.highbandtest.protocol.model.BaseMessage;
 import com.w3engineers.highbandtest.protocol.model.HelloMessage;
+import com.w3engineers.highbandtest.protocol.util.Constant;
 import com.w3engineers.highbandtest.protocol.util.P2PUtil;
 import com.w3engineers.highbandtest.protocol.util.WiFiUtil;
 
@@ -154,6 +155,20 @@ public class MeshHttpServer implements NanoHTTPServer.HttpDataListener {
         if(baseMessage instanceof HelloMessage) {
             if(messageListener != null) {
                 messageListener.onMessage(((HelloMessage) baseMessage).hello);
+            }
+
+            if(!Constant.MASTER_IP_ADDRESS.equals(ip) && P2PUtil.isMeGO()) {
+
+                HelloMessage helloMessage = new HelloMessage(null);
+                helloMessage.hello = "Hello from:"+ Constant.MASTER_IP_ADDRESS;
+
+                try {
+                    sendMessage(ip, helloMessage.toJson().getBytes());
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
