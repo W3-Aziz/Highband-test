@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.w3engineers.highbandtest.protocol.bt.BleLink;
 import com.w3engineers.highbandtest.protocol.bt.BluetoothClient;
 import com.w3engineers.highbandtest.protocol.bt.BluetoothDeviceReceiver;
@@ -15,7 +16,10 @@ import com.w3engineers.highbandtest.protocol.bt.LinkMode;
 import com.w3engineers.highbandtest.protocol.bt.MessageListener;
 import com.w3engineers.highbandtest.protocol.data.AppMessageListener;
 import com.w3engineers.highbandtest.protocol.model.Credential;
+import com.w3engineers.highbandtest.protocol.model.HelloMessage;
+import com.w3engineers.highbandtest.protocol.wifi.libmeshx.wifid.APCredentials;
 import com.w3engineers.highbandtest.protocol.wifi.libmeshx.wifid.WiFiDirectManagerLegacy;
+import com.w3engineers.highbandtest.protocol.wifi.libmeshx.wifid.WiFiMeshConfig;
 import com.w3engineers.highbandtest.util.HandlerUtil;
 import com.w3engineers.highbandtest.util.MeshLog;
 
@@ -103,6 +107,13 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
         bluetoothAdapter.cancelDiscovery();
     }
 
+    private void sendCredential(){
+        APCredentials credential = mWiFiDirectManagerLegacy.getAPCredentials();
+        Credential credentialMessage = new Credential(credential.mSSID, credential.mPassPhrase);
+        String string = new Gson().toJson(credentialMessage);
+        mBleLink.writeFrame(string.getBytes());
+    }
+
 
     @Override
     public void onBluetoothConnected(BleLink link) {
@@ -111,9 +122,20 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
         stopBtSearch();
         if (link.getLinkMode() == LinkMode.SERVER) {
             showToast("Bt connected as master");
+
+            mWiFiDirectManagerLegacy.mWiFiMeshConfig = new WiFiMeshConfig();
+            mWiFiDirectManagerLegacy.mWiFiMeshConfig.mIsGroupOwner = true;
+
+            mWiFiDirectManagerLegacy.start();
         } else {
             showToast("Bt connected as client");
+            mWiFiDirectManagerLegacy.mWiFiMeshConfig = new WiFiMeshConfig();
+            mWiFiDirectManagerLegacy.mWiFiMeshConfig.mIsClient = true;
+
+            mWiFiDirectManagerLegacy.start();
         }
+
+        HandlerUtil.postForeground(()->sendCredential(), 1500);
     }
 
     @Override
@@ -126,6 +148,11 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     @Override
     public void onCredentialReceived(Credential credential) {
 
+    }
+
+    @Override
+    public void onHelloMessageReceiver(HelloMessage helloMessage) {
+        connectedDeviceBtName.add(helloMessage.bleName);
     }
 
     @Override

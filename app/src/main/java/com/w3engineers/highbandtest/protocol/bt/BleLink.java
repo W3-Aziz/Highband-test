@@ -38,7 +38,7 @@ public class BleLink extends Thread {
     private BluetoothSocket bSocket;
     private DataInputStream in;
     private DataOutputStream out;
-    private MessageListener connectionListener;
+    private MessageListener messageListener;
     private Queue<byte[]> outputQueue = new LinkedList<>();
 
     private volatile boolean shouldCloseWhenOutputIsEmpty = false;
@@ -59,7 +59,7 @@ public class BleLink extends Thread {
             this.bSocket = bluetoothSocket;
             this.in = new DataInputStream(bluetoothSocket.getInputStream());
             this.out = new DataOutputStream(bluetoothSocket.getOutputStream());
-            this.connectionListener = connectionListener;
+            this.messageListener = connectionListener;
             this.linkMode = state;
         } catch (IOException e) {
             e.printStackTrace();
@@ -205,10 +205,10 @@ public class BleLink extends Thread {
     private void processMessage(String msg) {
         BaseMessage message = new Gson().fromJson(msg, BaseMessage.class);
 
-        if(message instanceof HelloMessage){
-
+        if (message instanceof HelloMessage) {
+            messageListener.onHelloMessageReceiver((HelloMessage) message);
         } else if (message instanceof Credential) {
-
+            messageListener.onCredentialReceived((Credential) message);
         }
     }
 
@@ -228,7 +228,7 @@ public class BleLink extends Thread {
         pool.shutdown();
         outputExecutor.shutdown();
 
-        HandlerUtil.postBackground(() -> connectionListener.onBluetoothDisconnected());
+        HandlerUtil.postBackground(() -> messageListener.onBluetoothDisconnected());
 
         mBleLink = null;
 
