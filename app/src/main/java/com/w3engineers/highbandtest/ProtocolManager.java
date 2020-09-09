@@ -109,9 +109,11 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
 
     private void sendCredential(){
         APCredentials credential = mWiFiDirectManagerLegacy.getAPCredentials();
-        Credential credentialMessage = new Credential(credential.mSSID, credential.mPassPhrase);
-        String string = new Gson().toJson(credentialMessage);
-        mBleLink.writeFrame(string.getBytes());
+        if(credential != null) {
+            Credential credentialMessage = new Credential(credential.mSSID, credential.mPassPhrase);
+            String string = new Gson().toJson(credentialMessage);
+            mBleLink.writeFrame(string.getBytes());
+        }
     }
 
 
@@ -147,7 +149,9 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
 
     @Override
     public void onCredentialReceived(Credential credential) {
-
+        if(mWiFiDirectManagerLegacy != null) {
+            mWiFiDirectManagerLegacy.connectWithAP(credential.ssid, credential.password);
+        }
     }
 
     @Override
