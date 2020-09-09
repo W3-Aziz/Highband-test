@@ -46,7 +46,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     private BluetoothAdapter bluetoothAdapter;
     private Context mContext;
     private BleLink mBleLink;
-    public static final String BLUETOOTH_PREFIX = "axy";
+    public static final String BLUETOOTH_PREFIX = "hepy";
     public static String bluetoothName;
     private WiFiDirectManagerLegacy mWiFiDirectManagerLegacy;
     public AppMessageListener mAppMessageListener;
@@ -67,6 +67,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
         mWiFiDirectManagerLegacy.mConnectionListener = new WiFiClient.ConneectionListener() {
             @Override
             public void onConnected(WifiInfo wifiConnectionInfo, String passPhrase) {
+                MeshLog.v("... Wifi connected .............");
                 if(mBleLink != null) {
                     mBleLink.notifyDisconnect(getClass().getSimpleName());
                 }
