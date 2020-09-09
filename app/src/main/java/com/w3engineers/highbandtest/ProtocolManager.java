@@ -163,19 +163,13 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
         bluetoothServer.stopListenThread();
         unregisterBluetoothReceiver();
         stopBtSearch();
-        if (link.getLinkMode() == LinkMode.SERVER) {
+        if (link.getLinkMode() == LinkMode.SERVER && (connectedDeviceBtName == null ||
+                connectedDeviceBtName.isEmpty())) {
             MeshLog.v("[highBand]Link mode server");
             showToast("Bt connected as master");
 
             mWiFiDirectManagerLegacy.mWiFiMeshConfig = new WiFiMeshConfig();
             mWiFiDirectManagerLegacy.mWiFiMeshConfig.mIsGroupOwner = true;
-
-            mWiFiDirectManagerLegacy.start();
-        } else {
-            MeshLog.v("[highBand]Link mode client");
-            showToast("Bt connected as client");
-            mWiFiDirectManagerLegacy.mWiFiMeshConfig = new WiFiMeshConfig();
-            mWiFiDirectManagerLegacy.mWiFiMeshConfig.mIsClient = true;
 
             mWiFiDirectManagerLegacy.start();
         }
