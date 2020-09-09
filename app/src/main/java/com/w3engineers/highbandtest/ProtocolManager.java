@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.net.wifi.WifiInfo;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -17,6 +18,7 @@ import com.w3engineers.highbandtest.protocol.bt.MessageListener;
 import com.w3engineers.highbandtest.protocol.data.AppMessageListener;
 import com.w3engineers.highbandtest.protocol.model.Credential;
 import com.w3engineers.highbandtest.protocol.model.HelloMessage;
+import com.w3engineers.highbandtest.protocol.wifi.libmeshx.wifi.WiFiClient;
 import com.w3engineers.highbandtest.protocol.wifi.libmeshx.wifid.APCredentials;
 import com.w3engineers.highbandtest.protocol.wifi.libmeshx.wifid.WiFiDirectManagerLegacy;
 import com.w3engineers.highbandtest.protocol.wifi.libmeshx.wifid.WiFiMeshConfig;
@@ -62,6 +64,24 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
         this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         mBluetoothDiscoveryReceiver = new BluetoothDeviceReceiver(this);
         mWiFiDirectManagerLegacy = WiFiDirectManagerLegacy.getInstance(mContext, null, null, null);
+        mWiFiDirectManagerLegacy.mConnectionListener = new WiFiClient.ConneectionListener() {
+            @Override
+            public void onConnected(WifiInfo wifiConnectionInfo, String passPhrase) {
+                if(mBleLink != null) {
+                    mBleLink.notifyDisconnect(getClass().getSimpleName());
+                }
+            }
+
+            @Override
+            public void onTimeOut() {
+
+            }
+
+            @Override
+            public void onDisconnected() {
+
+            }
+        };
     }
 
     public static ProtocolManager on(Context context) {
@@ -162,9 +182,9 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     @Override
     public void onBluetoothDisconnected() {
         mBleLink = null;
-        /*bluetoothServer.starListenThread();
-        registerBTDiscoveryReceiver();
-        startBtSearch();*/
+        bluetoothServer.starListenThread();
+//        registerBTDiscoveryReceiver();
+//        startBtSearch();
     }
 
     @Override

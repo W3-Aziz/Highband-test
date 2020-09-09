@@ -201,7 +201,7 @@ public class BleLink extends Thread {
     }
 
 
-    private void notifyDisconnect(String from) {
+    public void notifyDisconnect(String from) {
         this.state = State.DISCONNECTED;
         MeshLog.e(" Ble link disconnected due to =" + from);
         try {

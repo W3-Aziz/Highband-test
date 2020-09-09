@@ -7,13 +7,16 @@ import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.w3engineers.highbandtest.protocol.model.HelloMessage;
 import com.w3engineers.highbandtest.protocol.util.Constant;
 import com.w3engineers.highbandtest.protocol.util.WiFiUtil;
 import com.w3engineers.highbandtest.protocol.wifi.httpservices.MeshHttpServer;
+import com.w3engineers.highbandtest.ui.WiFiActivity;
 import com.w3engineers.highbandtest.util.MeshLog;
 import com.w3engineers.highbandtest.util.PermissionUtil;
 
@@ -50,6 +53,13 @@ public class MainActivity extends AppCompatActivity {
         protocolManager = ProtocolManager.on(getApplicationContext());
         protocolManager.startProtocol();
         MeshHttpServer.on().start(protocolManager, ProtocolManager.HTTP_PORT);
+
+        protocolManager.mAppMessageListener = message -> {
+            if(!TextUtils.isEmpty(message)) {
+                runOnUiThread(() -> Toast.makeText(MainActivity.this, message,
+                        Toast.LENGTH_SHORT).show() );
+            }
+        };
     }
 
 

@@ -146,137 +146,7 @@ public class WiFiDirectManagerLegacy {
         }
     };
 
-    private WiFiClient.ConneectionListener mConnectionListener = new WiFiClient.ConneectionListener() {
-
-        /**
-         * We are connected. Check whether we are connected with any GO. If not then we disconnect
-         * and in turns re attemp for connection
-         * @param wifiConnectionInfo
-         * @param passPhrase
-         */
-        @Override
-        public void onConnected(final WifiInfo wifiConnectionInfo, String passPhrase) {
-
-            String ssidName = wifiConnectionInfo.getSSID();
-            boolean isPotentialGO = P2PUtil.isPotentialGO(ssidName);
-            mAPCredentials = new APCredentials(ssidName, passPhrase);
-
-            if (mWiFiMeshConfig.mIsGroupOwner && isPotentialGO && mSoftAccessPoint != null &&
-                    mSoftAccessPoint.isGoAlive()) {
-                //If me is a GO then we do not allow any connection with any other GO
-
-                //We sent an interruption to app layer.
-                mMeshXLCListener.onConnectWithGOBeingGO(mWiFiClient.disConnect());
-
-            } else if (mWiFiMeshConfig.mIsClient) {//Works iff me contains a client mode
-
-
-                if (mSoftAccessPointSearcher != null) {
-                    mSoftAccessPointSearcher.stop();
-                }
-
-
-                mNetworkName = ssidName;
-
-                if (isPotentialGO) {
-                    if (WiFiUtil.isSameSSID(mConnectingSSID, ssidName)) {
-                        if (mMeshXLCListener != null) {
-                            mMeshXLCListener.onConnectWithGO(wifiConnectionInfo.getSSID());
-                        } else {
-                        }
-
-                    } else {
-                        //Unexpected P2P network
-                        //Disconnect from the network and restart required services
-                        if (mWiFiClient.isConnected()) {
-                            mWiFiConnectionHelper.removeNetwork(wifiConnectionInfo.getNetworkId());
-                            mWiFiClient.disConnect();
-                        }
-                    }
-                } else {//Adhoc
-              /*  MeshLog.w("[MeshX] Adhoc connectivity:" + ssidName);
-
-                NSDHelper nsdHelper = NSDHelper.getInstance(mContext);
-                nsdHelper.initializeNsd();
-                nsdHelper.setNSDListener(new NSDListener() {
-                    @Override
-                    public void onNodeAvailable(String ip, int port, String name) {
-                        MeshLog.i("[NSD] service found on:" + ip + ":" + port + ":" + name);
-                        mMeshXLCListener.onConnectWithAdhocPeer(ip, port);
-                    }
-
-                    @Override
-                    public void onNodeGone(String ip) {
-                        MeshLog.i("[NSD] service gone:" + ip);
-                        mMeshXLCListener.onDisconnectedWithAdhoc(ip);
-                    }
-                });
-
-                //nsdHelper.stopDiscovery();
-                //nsdHelper.tearDown();
-
-                InetAddress inetAddress = WifiDetector.determineAddress(mContext);
-                nsdHelper.registerService(mWiFiMeshConfig == null ? null :
-                        mWiFiMeshConfig.mServiceName, TransportManagerX.APP_PORT, inetAddress);
-
-                nsdHelper.discoverServices();*/
-                }
-
-                mConnectingSSID = null;
-            }
-        }
-
-        @Override
-        public void onTimeOut() {
-            mConnectingSSID = null;
-            if (mWiFiMeshConfig.mIsClient) {
-
-                if (mWiFiClient != null && !mWiFiClient.isConnected()) {
-
-                    if (mMeshXLogListener != null) {
-                        mMeshXLogListener.onLog("[OnTimeOut]");
-                    }
-
-                    if (mWiFiMeshConfig != null && mWiFiMeshConfig.mIsClient) {
-                        reAttemptServiceDiscovery();
-                    }
-                }
-            } else if(mWiFiMeshConfig.mIsGroupOwner && !mSoftAccessPoint.isGoAlive()) {
-
-                mSoftAccessPoint.start();
-
-            }
-        }
-
-        /**
-         * We are connected so enabling GO and Service searcher
-         */
-        @Override
-        public void onDisconnected() {
-
-            mConnectingSSID = null;
-            if (mWiFiMeshConfig.mIsClient) {
-                if (mMeshXLCListener != null) {
-                    mMeshXLCListener.onDisconnectWithGO(mNetworkName);
-                }
-
-                if (mMeshXLogListener != null) {
-                    mMeshXLogListener.onLog("[onDisconnected]");
-                }
-
-                if (mWiFiStateMonitor != null && mWiFiClient != null && mWiFiClient.isWiFiOn()) {
-                    //Due to forceful reset of WiFi we do not want to have false alarm by state monitor
-                    mWiFiStateMonitor.destroy();
-                }
-                reAttemptServiceDiscovery();
-
-            } else if(mWiFiMeshConfig.mIsGroupOwner && !mSoftAccessPoint.isGoAlive()) {
-
-                mSoftAccessPoint.start();
-
-            }
-        }
-    };
+    public WiFiClient.ConneectionListener mConnectionListener;
 
     /**
      * It considers client connection state of GO part. Make sure we are not re initiating GO
@@ -651,9 +521,9 @@ public class WiFiDirectManagerLegacy {
                 mWiFiClient.setConnectionListener(mConnectionListener);
                 mAPCredentials = new APCredentials(wifiConnectionInfo.getSSID(), passPhrase);
 
-                /*if(P2PUtil.isPotentialGO(credential.ssid)) {
+                if(mConnectionListener != null) {
                     mConnectionListener.onConnected(wifiConnectionInfo, passPhrase);
-                }*/
+                }
             }
 
             @Override
