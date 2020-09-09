@@ -197,7 +197,7 @@ public class BleLink extends Thread {
         BaseMessage message = BaseMessage.toBaseMessage(msg);
 
         if (message instanceof HelloMessage) {
-           // messageListener.onBluetoothConnected(this);
+           messageListener.onBluetoothConnected(this);
             messageListener.onHelloMessageReceiver((HelloMessage) message);
         } else if (message instanceof Credential) {
             messageListener.onCredentialReceived((Credential) message);

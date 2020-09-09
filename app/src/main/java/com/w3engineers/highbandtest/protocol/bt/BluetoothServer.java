@@ -84,7 +84,7 @@ public class BluetoothServer {
                 String hello = new Gson().toJson(new HelloMessage(ProtocolManager.bluetoothName));
                 link.writeFrame(hello.getBytes());
 
-                messageListener.onBluetoothConnected(link);
+                //messageListener.onBluetoothConnected(link);
 
                 MeshLog.v("Ble server accept connection");
             } catch (IOException e) {

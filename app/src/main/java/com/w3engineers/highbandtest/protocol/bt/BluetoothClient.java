@@ -52,7 +52,10 @@ public class BluetoothClient {
                     bluetoothSocket = createBluetoothSocket(bluetoothDevice, Constant.MY_UUID_INSECURE);
 
                     bluetoothSocket.connect();
-                    if (BleLink.getBleLink() != null) return;
+                    if (BleLink.getBleLink() != null){
+                        MeshLog.e("BT link already exist...");
+                        return;
+                    }
 
                     BleLink link = BleLink.on(bluetoothSocket, messageListener, LinkMode.CLIENT);
                     link.start();
@@ -60,7 +63,7 @@ public class BluetoothClient {
                     link.writeFrame(hello.getBytes());
                     server.stopListenThread();
                     listener.onConnectionState(bluetoothDevice.getName(), true);
-                    messageListener.onBluetoothConnected(link);
+                    //messageListener.onBluetoothConnected(link);
                     MeshLog.v("Bluetooth connection success");
                     isConnecting = false;
                 } catch (IOException | IllegalThreadStateException e) {
