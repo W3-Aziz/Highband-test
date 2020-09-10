@@ -256,7 +256,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     }
 
     private void showToast(String message) {
-        HandlerUtil.postForeground(() -> Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show());
+        HandlerUtil.postForeground(() -> Toast.makeText(mContext, message, Toast.LENGTH_LONG).show());
     }
 
     public void sendBtMessage() {
