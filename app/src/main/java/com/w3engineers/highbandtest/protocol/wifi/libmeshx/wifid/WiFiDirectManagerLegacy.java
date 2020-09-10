@@ -524,6 +524,8 @@ public class WiFiDirectManagerLegacy {
                         mConnectionListener.onConnected(wifiConnectionInfo, passPhrase);
                     }
                 } else {
+                    MeshLog.e("--Different ssid  attempt :"+credential.ssid+" connected :"+wifiConnectionInfo.getSSID());
+
                     if(++mSSIDConnectionAttempt < MAX_SSID_CONNECTION_ATTEMPT) {
                         connectWithAP(credential);
                     } else {

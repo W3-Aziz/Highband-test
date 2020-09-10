@@ -47,7 +47,7 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     private BluetoothAdapter bluetoothAdapter;
     private Context mContext;
     private BleLink mBleLink;
-    public static final String BLUETOOTH_PREFIX = "qupe";
+    public static final String BLUETOOTH_PREFIX = "xaom";
     public static String bluetoothName;
     private WiFiDirectManagerLegacy mWiFiDirectManagerLegacy;
     public AppMessageListener mAppMessageListener;
@@ -187,8 +187,8 @@ public class ProtocolManager implements MessageListener, BluetoothDeviceReceiver
     public void onBluetoothDisconnected() {
         mBleLink = null;
         bluetoothServer.starListenThread();
-//        registerBTDiscoveryReceiver();
-//        startBtSearch();
+        registerBTDiscoveryReceiver();
+        startBtSearch();
     }
 
     @Override

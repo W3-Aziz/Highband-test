@@ -151,6 +151,8 @@ public class BleLink extends Thread {
             }
             notifyDisconnect("IOException -> " + e.getMessage());
             return;
+        }finally {
+            notifyDisconnect("From finally ");
         }
 
     }
